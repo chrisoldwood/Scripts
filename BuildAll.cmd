@@ -27,7 +27,7 @@ for /r %%i in (*.sln) do (
 	echo ============================================================
 	echo Building %%i
 	echo ============================================================
-	call Build.cmd %1 "%%i"
+	call %~dp0Build.cmd %1 "%%i"
 	if errorlevel 1 (
 		echo.
 		echo ERROR: Failed to build solution.

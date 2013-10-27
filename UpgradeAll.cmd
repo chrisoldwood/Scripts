@@ -21,7 +21,7 @@ if /i "%TOOLCHAIN%" == "" (
 
 :upgrade_solutions
 for /r %%i in (*.sln) do (
-	upgrade %%i
+	call %~dp0Upgrade.cmd %%i
 	if errorlevel 1 exit /b 1
 )
 

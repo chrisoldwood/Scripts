@@ -24,11 +24,7 @@ if /i "%TOOLCHAIN%" == "" (
 	exit /b 1
 )
 
-echo Upgrading %1...
-
-attrib -r /s Lib\*.vcproj
-attrib -r %~dpn1.sln  
-attrib -r %~dpn1.vcproj  
+echo Upgrading '%1'...
 
 :do_upgrade
 if /i "%VC_EDITION%" == "retail" (
@@ -40,11 +36,24 @@ if errorlevel 1 exit /b 1
 )
 
 :do_cleanup
-del /s lib\*.vcproj.*.*.old 2> nul
+echo.
+echo Cleaning up...
+if exist "%~dp1..\..\..\Lib" (
+del /s %~dp1..\..\..\Lib\*.vcproj.*.*.old 2> nul
+del /s %~dp1..\..\..\Lib\*.vcproj.*.*.user 2> nul
+)
+if exist "%~dp1..\Lib" (
+del /s %~dp1..\Lib\*.vcproj.*.*.old 2> nul
+del /s %~dp1..\Lib\*.vcproj.*.*.user 2> nul
+)
 del %~dpn1.sln.old 2> nul
+del %~dp1Backup\%~n1.sln 2> nul
+del /ah %~dp1Backup\%~n1.suo 2> nul
 del /s %~dp1\*.vcproj.*.*.old 2> nul
+del /s %~dp1\*.vcproj.*.*.user 2> nul
 del /s %~dp1\UpgradeLog*.XML 2> nul
-rd /s /q %~dp1\_UpgradeReport_Files 2> nul
+rmdir /q %~dp1Backup 2> nul
+rmdir /s /q %~dp1\_UpgradeReport_Files 2> nul
 
 :success
 exit /b 0

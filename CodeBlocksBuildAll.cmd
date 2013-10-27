@@ -16,7 +16,7 @@ for /r %%i in (*.workspace) do (
 	echo ============================================================
 	echo Building %%i
 	echo ============================================================
-	call CodeBlocksBuild.cmd "%%i"
+	call %~dp0CodeBlocksBuild.cmd "%%i"
 )
 
 :success

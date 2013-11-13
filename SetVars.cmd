@@ -34,8 +34,6 @@ set INCLUDE=
 set LIB=
 set SOURCE=
 set PATH=^
-%~dp0..\3rdParty\wix35;^
-%ProgramFiles%\Microsoft Visual Studio\COMMON\VSS\win32;^
 %SystemRoot%\system32\WindowsPowerShell\v1.0;^
 %SystemRoot%\system32;^
 %SystemRoot%
@@ -103,16 +101,6 @@ if errorlevel 1 exit /b 1
 goto :set_vcs
 
 :set_vcs
-set oldPath=%PATH%
-if exist "%ProgramFiles%\Microsoft Visual SourceSafe"              set PATH=%oldPath%;%ProgramFiles%\Microsoft Visual SourceSafe
-if exist "%ProgramFiles%\Microsoft Visual Studio\COMMON\VSS\win32" set PATH=%oldPath%;%ProgramFiles%\Microsoft Visual Studio\COMMON\VSS\win32
-set oldPath=
-
-if /i "%SSDIR%" == "" (
-	echo.
-	echo WARNING: SourceSafe database [SSDIR] not configured.
-	echo.
-)
 
 :success
 exit /b 0

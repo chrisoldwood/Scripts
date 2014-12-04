@@ -41,7 +41,7 @@ rem ************************************************************
 
 :usage
 echo.
-echo Usage: %~n0 [debug ^| release ^| all] [solution]
+echo Usage: %~n0 [debug ^| release ^| all] [WiX script]
 echo.
 echo e.g.   %~n0 all project\Setup.wxs
 goto :eof

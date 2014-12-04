@@ -101,6 +101,18 @@ if errorlevel 1 exit /b 1
 goto :set_vcs
 
 :set_vcs
+set gitPath=C:\Program Files\Git\bin
+if exist "%gitPath%" (
+	echo Git added to the PATH
+	set PATH=%PATH%;%gitPath%
+)
+
+:set_wix
+set wixPath=%~dp0..\3rdParty\wix35
+if exist "%wixPath%" (
+	echo WiX 3.5 added to the PATH
+	set PATH=%PATH%;%wixPath%
+)
 
 :success
 exit /b 0

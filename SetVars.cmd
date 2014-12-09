@@ -9,6 +9,9 @@ rem VC++  8.0: "%VS80COMNTOOLS%\vsvars32.bat"
 rem VC++  9.0: "%VS90COMNTOOLS%\vsvars32.bat"
 rem VC++ 10.0: "%VS100COMNTOOLS%\vsvars32.bat"
 rem
+rem Set the following variables for your VCS and WIX paths to
+rem have them included in the path: VCS_PATH & WIX_PATH.
+rem
 rem ************************************************************
 
 :handle_help_request
@@ -101,17 +104,15 @@ if errorlevel 1 exit /b 1
 goto :set_vcs
 
 :set_vcs
-set gitPath=C:\Program Files\Git\bin
-if exist "%gitPath%" (
+if defined VCS_PATH (
 	echo Git added to the PATH
-	set PATH=%PATH%;%gitPath%
+	set PATH=%PATH%;%VCS_PATH%
 )
 
 :set_wix
-set wixPath=%~dp0..\3rdParty\wix35
-if exist "%wixPath%" (
-	echo WiX 3.5 added to the PATH
-	set PATH=%PATH%;%wixPath%
+if defined WIX_PATH (
+	echo WiX added to the PATH
+	set PATH=%PATH%;%WIX_PATH%
 )
 
 :success

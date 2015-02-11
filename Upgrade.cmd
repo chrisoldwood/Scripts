@@ -51,7 +51,9 @@ del %~dp1Backup\%~n1.sln 2> nul
 del /ah %~dp1Backup\%~n1.suo 2> nul
 del /s %~dp1\*.vcproj.*.*.old 2> nul
 del /s %~dp1\*.vcproj.*.*.user 2> nul
+del /s %~dp1\UpgradeLog*.htm 2> nul
 del /s %~dp1\UpgradeLog*.XML 2> nul
+for /d %%d in (%~dp1Backup\*.*) do rmdir /q %%d 2>nul
 rmdir /q %~dp1Backup 2> nul
 rmdir /s /q %~dp1\_UpgradeReport_Files 2> nul
 

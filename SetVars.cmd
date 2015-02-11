@@ -8,6 +8,7 @@ rem VC++  7.1: "%VS71COMNTOOLS%\vsvars32.bat"
 rem VC++  8.0: "%VS80COMNTOOLS%\vsvars32.bat"
 rem VC++  9.0: "%VS90COMNTOOLS%\vsvars32.bat"
 rem VC++ 10.0: "%VS100COMNTOOLS%\vsvars32.bat"
+rem VC++ 11.0: "%VS110COMNTOOLS%\vsvars32.bat"
 rem
 rem Set the following variables for your VCS and WIX paths to
 rem have them included in the path: VCS_PATH & WIX_PATH.
@@ -61,6 +62,7 @@ if /i "%compiler%" == "vc71"  goto :set_vc71_compiler
 if /i "%compiler%" == "vc80"  goto :set_vc80_compiler
 if /i "%compiler%" == "vc90"  goto :set_vc90_compiler
 if /i "%compiler%" == "vc100" goto :set_vc100_compiler
+if /i "%compiler%" == "vc110" goto :set_vc110_compiler
 echo ERROR: Invalid compiler specified '%compiler%'
 call :usage
 exit /b 1
@@ -98,6 +100,14 @@ goto :set_vcs
 :set_vc100_compiler
 set VC_VERSION=vc100
 set VS_COMNTOOLS=%VS100COMNTOOLS%
+if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\vcvars32.bat"
+if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\x86_amd64\vcvarsx86_amd64.bat"
+if errorlevel 1 exit /b 1
+goto :set_vcs
+
+:set_vc110_compiler
+set VC_VERSION=vc110
+set VS_COMNTOOLS=%VS110COMNTOOLS%
 if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\vcvars32.bat"
 if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\x86_amd64\vcvarsx86_amd64.bat"
 if errorlevel 1 exit /b 1
@@ -145,7 +155,7 @@ exit /b 1
 
 :usage
 echo.
-echo Usage: %~n0 [vc71 ^| vc80 ^| vc90 ^| vc100] [-x86 ^| -x64]
+echo Usage: %~n0 [vc71 ^| vc80 ^| vc90 ^| vc100 ^| vc110] [-x86 ^| -x64]
 echo.
 echo e.g.   %~n0 vc71     (implies -x86)
 echo        %~n0 vc80-x86

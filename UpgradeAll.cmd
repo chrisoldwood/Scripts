@@ -10,8 +10,8 @@ rem
 rem ************************************************************
 
 :handle_help_request
-if /i "%1" == "-?"     call :usage & exit /b 0
-if /i "%1" == "--help" call :usage & exit /b 0
+if /i "%~1" == "-?"     call :usage & exit /b 0
+if /i "%~1" == "--help" call :usage & exit /b 0
 
 :verify_toolchain
 if /i "%TOOLCHAIN%" == "" (

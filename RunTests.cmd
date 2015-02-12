@@ -6,17 +6,17 @@ rem
 rem ************************************************************
 
 :handle_help_request
-if /i "%1" == "-?"     call :usage & exit /b 0
-if /i "%1" == "--help" call :usage & exit /b 0
+if /i "%~1" == "-?"     call :usage & exit /b 0
+if /i "%~1" == "--help" call :usage & exit /b 0
 
 :check_args
-if /i "%1" == "" call :usage & exit /b 1
+if /i "%~1" == "" call :usage & exit /b 1
 
 :set_build
-if /i "%1" == "debug"	set build=Debug
-if /i "%1" == "release"	set build=Release
+if /i "%~1" == "debug"	set build=Debug
+if /i "%~1" == "release"	set build=Release
 if /i "%build%"== "" (
-echo ERROR: Invalid build type '%1'
+echo ERROR: Invalid build type '%~1'
 call :usage
 exit /b 0
 )
@@ -24,7 +24,7 @@ exit /b 0
 :run_tests
 for /r /d %%d in (Test) do (
 	if exist "%%d\%build%" (
-		call :invoke_runner %%d %%d\%build%\Test.exe
+		call :invoke_runner "%%d" "%%d\%build%\Test.exe"
 		if errorlevel 1 call :show_failed & exit /b 1
 	)
 )
@@ -57,11 +57,13 @@ echo ************************************************************
 goto :eof
 
 :invoke_runner
-if exist "%2" (
+set suite=%~1
+set runner=%~2
+if exist "%runner%" (
 	echo ============================================================
-	echo Running: '%1'
+	echo Running: '%suite%'
 	echo ============================================================
-	"%2" -q
+	"%runner%" -q
 	echo.
 )
 if errorlevel 1 exit /b 1

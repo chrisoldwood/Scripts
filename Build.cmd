@@ -11,12 +11,12 @@ rem
 rem ************************************************************
 
 :handle_help_request
-if /i "%1" == "-?"     call :usage & exit /b 0
-if /i "%1" == "--help" call :usage & exit /b 0
+if /i "%~1" == "-?"     call :usage & exit /b 0
+if /i "%~1" == "--help" call :usage & exit /b 0
 
 :check_args
-if /I "%1" == "" call :usage & exit /b 1
-if /I "%2" == "" call :usage & exit /b 1
+if /i "%~1" == "" call :usage & exit /b 1
+if /i "%~2" == "" call :usage & exit /b 1
 
 :verify_toolchain
 if /i "%TOOLCHAIN%" == "" (
@@ -25,13 +25,13 @@ if /i "%TOOLCHAIN%" == "" (
 )
 
 :do_debug_build
-if /i "%1" == "all"   call :build %2 debug
-if /i "%1" == "debug" call :build %2 debug
+if /i "%~1" == "all"   call :build "%~2" debug
+if /i "%~1" == "debug" call :build "%~2" debug
 if errorlevel 1 exit /b 1
 
 :do_release_build
-if /I "%1" == "all"     call :build %2 release
-if /I "%1" == "release" call :build %2 release
+if /i "%~1" == "all"     call :build "%~2" release
+if /i "%~1" == "release" call :build "%~2" release
 if errorlevel 1 exit /b 1
 
 :success
@@ -50,31 +50,31 @@ echo        %~n0 all lib\project\Solution.sln
 goto :eof
 
 :build
-if /i "%VC_VERSION%" == "vc71"  call :use_devenv  %1 %2
-if /i "%VC_VERSION%" == "vc80"  call :use_vcbuild %1 %2
-if /i "%VC_VERSION%" == "vc90"  call :use_vcbuild %1 %2
+if /i "%VC_VERSION%" == "vc71"  call :use_devenv  "%~1" "%~2"
+if /i "%VC_VERSION%" == "vc80"  call :use_vcbuild "%~1" "%~2"
+if /i "%VC_VERSION%" == "vc90"  call :use_vcbuild "%~1" "%~2"
 if /i "%VC_VERSION%" == "vc100" (
         if /i "%VC_EDITION%" == "retail" (
-                call :use_devenv %1 %2
+                call :use_devenv "%~1" "%~2"
         ) else (
-                call :use_vcexpress %1 %2
+                call :use_vcexpress "%~1" "%~2"
         )
 )
-if /i "%VC_VERSION%" == "vc110" call :use_devenv  %1 %2
+if /i "%VC_VERSION%" == "vc110" call :use_devenv  "%~1" "%~2"
 if errorlevel 1 exit /b 1
 goto :eof
 
 :use_devenv
-devenv /nologo /useenv %1 /build %2
+devenv /nologo /useenv "%~1" /build "%~2"
 if errorlevel 1 exit /b 1
 goto :eof
 
 :use_vcbuild
-vcbuild /nologo /useenv %1 "%2|%VC_PLATFORM%"
+vcbuild /nologo /useenv "%~1" "%~2|%VC_PLATFORM%"
 if errorlevel 1 exit /b 1
 goto :eof
 
 :use_vcexpress
-vcexpress %1 /useenv /build "%2|%VC_PLATFORM%"
+vcexpress "%~1" /useenv /build "%~2|%VC_PLATFORM%"
 if errorlevel 1 exit /b 1
 goto :eof

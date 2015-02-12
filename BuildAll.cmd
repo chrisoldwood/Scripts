@@ -10,11 +10,11 @@ rem
 rem ************************************************************
 
 :handle_help_request
-if /i "%1" == "-?"     call :usage & exit /b 0
-if /i "%1" == "--help" call :usage & exit /b 0
+if /i "%~1" == "-?"     call :usage & exit /b 0
+if /i "%~1" == "--help" call :usage & exit /b 0
 
 :check_args
-if /i "%1" == "" call :usage & exit /b 1
+if /i "%~1" == "" call :usage & exit /b 1
 
 :verify_toolchain
 if /i "%TOOLCHAIN%" == "" (
@@ -22,12 +22,14 @@ if /i "%TOOLCHAIN%" == "" (
 	exit /b 1
 )
 
+set build=%~1
+
 :do_builds
 for /r %%i in (*.sln) do (
 	echo ============================================================
-	echo Building %%i
+	echo Building '%%i'
 	echo ============================================================
-	call %~dp0Build.cmd %1 "%%i"
+	call "%~dp0Build.cmd" %build% "%%i"
 	if errorlevel 1 (
 		echo.
 		echo ERROR: Failed to build solution.

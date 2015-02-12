@@ -1,0 +1,1 @@
+- Fix handling of 64-bit paths, i.e. C:\Program Files (x86)

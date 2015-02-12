@@ -12,8 +12,8 @@ rem
 rem ************************************************************
 
 :handle_help_request
-if /i "%1" == "-?"     call :usage & exit /b 0
-if /i "%1" == "--help" call :usage & exit /b 0
+if /i "%~1" == "-?"     call :usage & exit /b 0
+if /i "%~1" == "--help" call :usage & exit /b 0
 
 :do_clean
 echo Removing VC++ intermediate files...
@@ -61,7 +61,7 @@ del /s /f *.bsc 2> nul
 del /s /f *.vcxproj.user 2> nul
 del /s /f *.vcxproj.filters 2> nul
 
-if /i "%1" == "--all" (
+if /i "%~1" == "--all" (
 	del /ah /s /f *.suo 2> nul
 	del /s /f *.vcproj.*.user 2> nul
 )
@@ -90,7 +90,7 @@ del /s /f *.a 2> nul
 
 echo Removing Code::Blocks workspace files...
 
-if /i "%1" == "--all" (
+if /i "%~1" == "--all" (
 	del /s /f *.depend 2> nul
 	del /s /f *.layout 2> nul
 )
@@ -104,22 +104,22 @@ del /s /f *.sup 2> nul
 echo Removing other files...
 
 del /s /f *.mht 2> nul
-for /d /r %%i in (debug)   do del /s /f %%i\*.ini 2> nul
-for /d /r %%i in (release) do del /s /f %%i\*.ini 2> nul
+for /d /r %%i in (debug)   do if exist "%%i" del /s /f "%%i\*.ini" 2> nul
+for /d /r %%i in (release) do if exist "%%i" del /s /f "%%i\*.ini" 2> nul
 rd /s /q VSMacros71 2> nul
 
 echo Removing Debug and Release directories...
 
 for /d %%i in (*) do (
-	for /d %%j in (%%i\ipch) do (
-		for /d %%k in (%%j\*) do rmdir %%k 2> nul
-		rmdir %%j 2> nul
+	for /d %%j in ("%%i\ipch") do (
+		for /d %%k in ("%%j\*") do rmdir "%%k" 2> nul
+		rmdir "%%j" 2> nul
 	)
 )
 
-for /d /r %%i in (debug)   do rmdir %%i 2> nul
-for /d /r %%i in (release) do rmdir %%i 2> nul
-for /d /r %%i in (x64)     do rmdir %%i 2> nul
+for /d /r %%i in (debug)   do if exist "%%i" rmdir "%%i" 2> nul
+for /d /r %%i in (release) do if exist "%%i" rmdir "%%i" 2> nul
+for /d /r %%i in (x64)     do if exist "%%i" rmdir "%%i" 2> nul
 
 :success
 exit /b 0

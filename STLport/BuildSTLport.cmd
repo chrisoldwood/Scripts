@@ -6,32 +6,32 @@ rem
 rem ************************************************************
 
 :handle_help_request
-if /i "%1" == "-?"     call :usage & exit /b 0
-if /i "%1" == "--help" call :usage & exit /b 0
+if /i "%~1" == "-?"     call :usage & exit /b 0
+if /i "%~1" == "--help" call :usage & exit /b 0
 
 :check_args
-if /I "%1" == "" call :usage & exit /b 1
-if /I "%2" == "" call :usage & exit /b 1
+if /I "%~1" == "" call :usage & exit /b 1
+if /I "%~2" == "" call :usage & exit /b 1
 
 :set_vars
 setlocal
-call "SetVars.cmd" %1 %2
+call "SetVars.cmd" "%~1" "%~2"
 if errorlevel 1 exit /b 1
 
 :set_compiler
-if /i "%1" == "vc71" set compiler=msvc71
-if /i "%1" == "vc80" set compiler=msvc8
-if /i "%1" == "vc90" set compiler=msvc9
+if /i "%~1" == "vc71" set compiler=msvc71
+if /i "%~1" == "vc80" set compiler=msvc8
+if /i "%~1" == "vc90" set compiler=msvc9
 
 if /i "%compiler%" == "" (
-echo ERROR: Unsupported compiler '%1'
+echo ERROR: Unsupported compiler '%~1'
 call :usage
 exit /b 1
 )
 
-pushd %2
+pushd "%~2"
 if errorlevel 1 (
-	echo ERROR: Failed to change to STLport folder '%2'
+	echo ERROR: Failed to change to STLport folder '%~2'
 	exit /b 1
 )
 

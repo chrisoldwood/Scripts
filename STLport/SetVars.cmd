@@ -8,21 +8,21 @@ rem
 rem ************************************************************
 
 :handle_help_request
-if /i "%1" == "-?"     call :usage & exit /b 0
-if /i "%1" == "--help" call :usage & exit /b 0
+if /i "%~1" == "-?"     call :usage & exit /b 0
+if /i "%~1" == "--help" call :usage & exit /b 0
 
 :check_args
-if /I "%1" == "" call :usage & exit /b 1
-if /I "%2" == "" call :usage & exit /b 1
+if /I "%~1" == "" call :usage & exit /b 1
+if /I "%~2" == "" call :usage & exit /b 1
 
 :set_vars
-call ..\SetVars.cmd %1
+call ..\SetVars.cmd "%~1"
 if errorlevel 1 exit /b 1
 
 :inject_stlport_paths
-set INCLUDE=%2\stlport;%INCLUDE%
-set LIB=%2\lib;%LIB%
-set PATH=%PATH%;%2\bin;
+set INCLUDE=%~2\stlport;%INCLUDE%
+set LIB=%~2\lib;%LIB%
+set PATH=%PATH%;%~2\bin;
 
 :success
 exit /b 0

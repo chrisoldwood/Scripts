@@ -16,16 +16,16 @@ rem
 rem ************************************************************
 
 :handle_help_request
-if /i "%1" == "-?"     call :usage & exit /b 0
-if /i "%1" == "--help" call :usage & exit /b 0
+if /i "%~1" == "-?"     call :usage & exit /b 0
+if /i "%~1" == "--help" call :usage & exit /b 0
 
 :count_args
-if /i "%1" == "" call :usage & exit /b 0
+if /i "%~1" == "" call :usage & exit /b 0
 
 :apply_defaults
-set TOOLCHAIN=%1
+set TOOLCHAIN=%~1
 if /i "%TOOLCHAIN:~-4,1%" == "-" goto :tokenise_toolchain
-set TOOLCHAIN=%1-x86
+set TOOLCHAIN=%~1-x86
 
 :tokenise_toolchain
 for /f "tokens=1,2 delims=-" %%i in ("%TOOLCHAIN%") do (
@@ -133,13 +133,13 @@ rem Functions
 rem ************************************************************
 
 :configure_compiler
-if not exist %1 (
-	echo ERROR: The compiler configuration script does not exist '%1'
+if not exist "%~1" (
+	echo ERROR: The compiler configuration script does not exist '%~1'
 	exit /b 1
 )
-call %1
+call "%~1"
 if errorlevel 1 (
-	echo ERROR: Failed to configure the compiler using script '%1'
+	echo ERROR: Failed to configure the compiler using script '%~1'
 	exit /b 1
 )
 if exist "%VS_COMNTOOLS%..\IDE\devenv.exe" (
@@ -150,7 +150,7 @@ set VC_EDITION=express
 goto :eof
 
 :unsupported_compiler
-echo ERROR: Unsupported compiler '%1'
+echo ERROR: Unsupported compiler '%~1'
 exit /b 1
 
 :usage

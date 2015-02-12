@@ -12,11 +12,11 @@ rem
 rem ************************************************************
 
 :handle_help_request
-if /i "%1" == "-?"     call :usage & exit /b 0
-if /i "%1" == "--help" call :usage & exit /b 0
+if /i "%~1" == "-?"     call :usage & exit /b 0
+if /i "%~1" == "--help" call :usage & exit /b 0
 
 :check_args
-if /I "%1" == "" call :usage & exit /b 1
+if /i "%~1" == "" call :usage & exit /b 1
 
 :verify_toolchain
 if /i "%TOOLCHAIN%" == "" (
@@ -24,14 +24,14 @@ if /i "%TOOLCHAIN%" == "" (
 	exit /b 1
 )
 
-echo Upgrading '%1'...
+echo Upgrading '%~1'...
 
 :do_upgrade
 if /i "%VC_EDITION%" == "retail" (
-devenv /upgrade %1
+devenv /upgrade "%~1"
 if errorlevel 1 exit /b 1
 ) else (
-vcexpress %1
+vcexpress "%~1"
 if errorlevel 1 exit /b 1
 )
 

@@ -11,11 +11,11 @@ rem
 rem ************************************************************
 
 :handle_help_request
-if /i "%1" == "-?"     call :usage & exit /b 0
-if /i "%1" == "--help" call :usage & exit /b 0
+if /i "%~1" == "-?"     call :usage & exit /b 0
+if /i "%~1" == "--help" call :usage & exit /b 0
 
 :check_args
-if /I "%1" == "" call :usage & exit /b 1
+if /i "%~1" == "" call :usage & exit /b 1
 
 set codeBlocksProgram=c:\Program Files\CodeBlocks\codeblocks.exe
 
@@ -24,7 +24,7 @@ if not exist "%codeBlocksProgram%" (
 	exit /b 1
 )
 
-"%codeBlocksProgram%" --build %1 --no-batch-window-close
+"%codeBlocksProgram%" --build "%~1" --no-batch-window-close
 if errorlevel 1 (
 	echo ERROR: Build failed.
 	exit /b 1

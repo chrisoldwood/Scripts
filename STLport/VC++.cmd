@@ -5,6 +5,7 @@ rem Launch Visual C++ with the environment variables configured
 rem for use with STLport.
 rem
 rem ************************************************************
+setlocal enabledelayedexpansion
 
 :handle_help_request
 if /i "%~1" == "-?"     call :usage & exit /b 0

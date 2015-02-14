@@ -7,6 +7,7 @@ rem NB: You must set the environment variables first by running
 rem the SetVars script.
 rem
 rem ************************************************************
+setlocal enabledelayedexpansion
 
 :handle_help_request
 if /i "%~1" == "-?"     call :usage & exit /b 0

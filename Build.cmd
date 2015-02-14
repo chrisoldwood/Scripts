@@ -9,6 +9,7 @@ rem the SetVars script. If building with STLport you need to use
 rem the STLport\SetVars script instead.
 rem
 rem ************************************************************
+setlocal enabledelayedexpansion
 
 :handle_help_request
 if /i "%~1" == "-?"     call :usage & exit /b 0

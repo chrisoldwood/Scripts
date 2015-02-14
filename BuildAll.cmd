@@ -8,6 +8,7 @@ rem NB: See Build.cmd for notes about setting the environment
 rem variables up first.
 rem
 rem ************************************************************
+setlocal enabledelayedexpansion
 
 :handle_help_request
 if /i "%~1" == "-?"     call :usage & exit /b 0

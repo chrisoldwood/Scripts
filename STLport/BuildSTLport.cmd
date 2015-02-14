@@ -4,6 +4,7 @@ rem
 rem Configure and build STLport for Visual C++.
 rem
 rem ************************************************************
+setlocal enabledelayedexpansion
 
 :handle_help_request
 if /i "%~1" == "-?"     call :usage & exit /b 0

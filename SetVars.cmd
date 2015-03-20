@@ -125,6 +125,12 @@ if defined WIX_PATH (
 	set PATH=%PATH%;%WIX_PATH%
 )
 
+:set_zip
+if defined ZIP_PATH (
+	echo Zip added to the PATH
+	set PATH=%PATH%;%ZIP_PATH%
+)
+
 :success
 exit /b 0
 

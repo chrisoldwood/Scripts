@@ -70,22 +70,25 @@ exit /b 1
 :set_vc71_compiler
 set VC_VERSION=vc71
 set VS_COMNTOOLS=%VS71COMNTOOLS%
+if not defined VS71COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (VS71COMNTOOLS not defined)  & exit /b 1
 if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc7\bin\vcvars32.bat"
-if /i "%platform%" == "x64" call :unsupported_compiler %TOOLCHAIN%
+if /i "%platform%" == "x64" call :unsupported_compiler %TOOLCHAIN% & exit /b 1
 if errorlevel 1 exit /b 1
-goto :set_vcs
+goto :success
 
 :set_vc80_compiler
 set VC_VERSION=vc80
 set VS_COMNTOOLS=%VS80COMNTOOLS%
+if not defined VS80COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (VS80COMNTOOLS not defined)  & exit /b 1
 if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\vcvars32.bat"
-if /i "%platform%" == "x64" call :unsupported_compiler %TOOLCHAIN%
+if /i "%platform%" == "x64" call :unsupported_compiler %TOOLCHAIN% & exit /b 1
 if errorlevel 1 exit /b 1
-goto :set_vcs
+goto :success
 
 :set_vc90_compiler
 set VC_VERSION=vc90
 set VS_COMNTOOLS=%VS90COMNTOOLS%
+if not defined VS90COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (VS90COMNTOOLS not defined)  & exit /b 1
 if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\vcvars32.bat"
 if /i "%platform%" == "x64" (
 	if exist "%VS_COMNTOOLS%..\..\vc\bin\x86_amd64\vcvarsx86_amd64.bat" (
@@ -95,41 +98,25 @@ if /i "%platform%" == "x64" (
 	)
 )
 if errorlevel 1 exit /b 1
-goto :set_vcs
+goto :success
 
 :set_vc100_compiler
 set VC_VERSION=vc100
 set VS_COMNTOOLS=%VS100COMNTOOLS%
+if not defined VS100COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (VS100COMNTOOLS not defined)  & exit /b 1
 if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\vcvars32.bat"
 if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\x86_amd64\vcvarsx86_amd64.bat"
 if errorlevel 1 exit /b 1
-goto :set_vcs
+goto :success
 
 :set_vc110_compiler
 set VC_VERSION=vc110
 set VS_COMNTOOLS=%VS110COMNTOOLS%
+if not defined VS110COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (VS110COMNTOOLS not defined)  & exit /b 1
 if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\vcvars32.bat"
 if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\x86_amd64\vcvarsx86_amd64.bat"
 if errorlevel 1 exit /b 1
-goto :set_vcs
-
-:set_vcs
-if defined VCS_PATH (
-	echo Git added to the PATH
-	set PATH=%PATH%;%VCS_PATH%
-)
-
-:set_wix
-if defined WIX_PATH (
-	echo WiX added to the PATH
-	set PATH=%PATH%;%WIX_PATH%
-)
-
-:set_zip
-if defined ZIP_PATH (
-	echo Zip added to the PATH
-	set PATH=%PATH%;%ZIP_PATH%
-)
+goto :success
 
 :success
 exit /b 0
@@ -140,14 +127,19 @@ rem ************************************************************
 
 :configure_compiler
 if not exist "%~1" (
-	echo ERROR: The compiler configuration script does not exist '%~1'
+	echo ERROR: The compiler configuration script does not exist "%~1"
 	exit /b 1
 )
+
+echo Invoking: %~1
 call "%~1"
 if errorlevel 1 (
-	echo ERROR: Failed to configure the compiler using script '%~1'
+	echo ERROR: Failed to configure the compiler using script "%~1"
 	exit /b 1
 )
+
+cl.exe 2>&1 | findstr /i /c:version
+
 if exist "%VS_COMNTOOLS%..\IDE\devenv.exe" (
 set VC_EDITION=retail
 ) else (
@@ -156,7 +148,7 @@ set VC_EDITION=express
 goto :eof
 
 :unsupported_compiler
-echo ERROR: Unsupported compiler '%~1'
+echo ERROR: Unsupported compiler "%~1"
 exit /b 1
 
 :usage
@@ -166,6 +158,8 @@ echo.
 echo e.g.   %~n0 vc71     (implies -x86)
 echo        %~n0 vc80-x86
 echo        %~n0 vc80-x64
+echo.
+echo Note: vc71=vs2003, vc80=vs2005, vc90=vs2008, vc100=vs2010, vc110=vs2012 
 goto :eof
 
 :display_vars

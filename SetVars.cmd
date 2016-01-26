@@ -10,8 +10,8 @@ rem VC++  9.0: "%VS90COMNTOOLS%\vsvars32.bat"
 rem VC++ 10.0: "%VS100COMNTOOLS%\vsvars32.bat"
 rem VC++ 11.0: "%VS110COMNTOOLS%\vsvars32.bat"
 rem
-rem Set the following variables for your VCS and WIX paths to
-rem have them included in the path: VCS_PATH & WIX_PATH.
+rem The --reset switch ensures that the variables are cleaned
+rem out first to provide a tighter sandbox. 
 rem
 rem ************************************************************
 
@@ -34,9 +34,14 @@ for /f "tokens=1,2 delims=-" %%i in ("%TOOLCHAIN%") do (
 )
 
 :reset_vars
+if /i not "%~2" == "--reset" (
+    if defined INCLUDE echo WARNING: INCLUDE variable already defined 
+    if defined LIB echo WARNING: LIB variable already defined 
+    goto :detect_platform 
+)
+
 set INCLUDE=
 set LIB=
-set SOURCE=
 set PATH=^
 %SystemRoot%\system32\WindowsPowerShell\v1.0;^
 %SystemRoot%\system32;^
@@ -153,11 +158,11 @@ exit /b 1
 
 :usage
 echo.
-echo Usage: %~n0 [vc71 ^| vc80 ^| vc90 ^| vc100 ^| vc110] [-x86 ^| -x64]
+echo Usage: %~n0 [vc71 ^| vc80 ^| vc90 ^| vc100 ^| vc110] [-x86 ^| -x64] [--reset]
 echo.
 echo e.g.   %~n0 vc71     (implies -x86)
 echo        %~n0 vc80-x86
-echo        %~n0 vc80-x64
+echo        %~n0 vc80-x64 --reset
 echo.
 echo Note: vc71=vs2003, vc80=vs2005, vc90=vs2008, vc100=vs2010, vc110=vs2012 
 goto :eof

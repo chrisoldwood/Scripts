@@ -1,9 +1,9 @@
 @echo off
 rem ************************************************************
 rem
-rem Script to build a Code::Blocks workspace
+rem Script to build a CodeBlocks workspace
 rem
-rem NB: The Code::Blocks build is not command line based and so
+rem NB: The CodeBlocks build is not command line based and so
 rem it returns immediately. This is also the reason why we leave
 rem the build window open because otherwise there is no build
 rem output.
@@ -18,10 +18,14 @@ if /i "%~1" == "--help" call :usage & exit /b 0
 :check_args
 if /i "%~1" == "" call :usage & exit /b 1
 
-set codeBlocksProgram=c:\Program Files\CodeBlocks\codeblocks.exe
+set codeBlocksProgram=%ProgramFiles%\CodeBlocks\codeblocks.exe
 
+if not defined ProgramFiles(x86) goto :check_installed
+set codeBlocksProgram=%ProgramFiles(x86)%\CodeBlocks\codeblocks.exe
+
+:check_installed
 if not exist "%codeBlocksProgram%" (
-	echo ERROR: Code::Blocks program not installed as '%codeBlocksProgram%'
+	echo ERROR: CodeBlocks program not installed as "%codeBlocksProgram%"
 	exit /b 1
 )
 

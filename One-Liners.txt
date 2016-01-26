@@ -1,0 +1,1 @@
+for /r %f in (*.cbp) do @CompareVCandCB %~dpf

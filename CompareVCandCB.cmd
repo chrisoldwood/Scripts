@@ -23,15 +23,15 @@ if not exist "%folder%\*.vcproj" echo ERROR: No .vcproj project file found in "%
 for %%f in ("%folder%\*.vcproj") do set vcprojFile=%%f
 
 set cbFileList=%TEMP%\CbFileList.txt
-grep -E "Unit filename" "%cbpFile%" | gawk -F"\42" "{ print $2 }" | gsort | uniq > "%cbFileList%" 
+grep -E "Unit filename" "%cbpFile%" | gawk -F"\42" "{ print $2 }" | sed -r "s/\.*\.\\//" | gsort | uniq > "%cbFileList%" 
 if %errorlevel% neq 0 exit /b 1
 
 set vcFileList=%TEMP%\VcFileList.txt
-grep -E "RelativePath" "%vcprojFile%" | gawk -F"\42" "{ print $2 }" | sed "s/.\\//g" | gsort | uniq > "%vcFileList%"
+grep -E "RelativePath" "%vcprojFile%" | gawk -F"\42" "{ print $2 }" | sed -r "s/\.*\.\\//" | gsort | uniq > "%vcFileList%"
 if %errorlevel% neq 0 exit /b 1
 
 echo %cbpFile% ^| %vcprojFile% 
-diff -i "%cbFileList%" "%vcFileList%" --side-by-side --suppress-common-lines --width 40
+diff -i "%cbFileList%" "%vcFileList%" --side-by-side --suppress-common-lines --width 80
 
 :success
 exit /b 0

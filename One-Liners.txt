@@ -1,1 +1,6 @@
+
+for /r %s in (.gitattributes*) do @echo *** %~dps *** && pushd %~dps && git status -s && popd
+
+for /r %s in (*.sln) do @echo *** %~dps *** && pushd %~dps && git commit -a -m "" && popd
+
 for /r %f in (*.cbp) do @CompareVCandCB %~dpf

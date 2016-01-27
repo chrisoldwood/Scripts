@@ -45,5 +45,4 @@ echo.
 echo Usage: %~n0 ^<project folder^>
 echo.
 echo e.g.   %~n0 C:\Dev\Project
-echo.
-echo Note: vc71=vs2003, vc80=vs2005, vc90=vs2008, vc100=vs2010, vc110=vs2012 
+goto :eof

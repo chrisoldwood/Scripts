@@ -1,6 +1,12 @@
 
-for /r %s in (.gitattributes*) do @echo *** %~dps *** && pushd %~dps && git status -s && popd
+for /r %d in (.) do @if exist "%d\.git" (echo *** %d *** && pushd %d && git status -s & popd)
 
-for /r %s in (*.sln) do @echo *** %~dps *** && pushd %~dps && git commit -a -m "" && popd
+for /r %d in (.) do @if exist "%d\.git" (echo *** %d *** && pushd %d && git commit -a -m "" & popd)
+
+for /r %d in (.) do @if exist "%d\.git" (echo *** %d *** && pushd %d && git diff --unified=0 & popd)
+
+for /r %d in (.) do @if exist "%d\.git" (echo *** %d *** && pushd %d && git push origin & popd)
+
+for /r %d in (.) do @if exist "%d\HEAD" (echo *** %d *** && pushd %d && git push github & popd)
 
 for /r %f in (*.cbp) do @CompareVCandCB %~dpf

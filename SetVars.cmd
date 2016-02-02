@@ -9,6 +9,7 @@ rem VC++  8.0: "%VS80COMNTOOLS%\vsvars32.bat"
 rem VC++  9.0: "%VS90COMNTOOLS%\vsvars32.bat"
 rem VC++ 10.0: "%VS100COMNTOOLS%\vsvars32.bat"
 rem VC++ 11.0: "%VS110COMNTOOLS%\vsvars32.bat"
+rem VC++ 14.0: "%VS140COMNTOOLS%\vsvars32.bat"
 rem
 rem The --reset switch ensures that the variables are cleaned
 rem out first to provide a tighter sandbox. 
@@ -68,6 +69,7 @@ if /i "%compiler%" == "vc80"  goto :set_vc80_compiler
 if /i "%compiler%" == "vc90"  goto :set_vc90_compiler
 if /i "%compiler%" == "vc100" goto :set_vc100_compiler
 if /i "%compiler%" == "vc110" goto :set_vc110_compiler
+if /i "%compiler%" == "vc140" goto :set_vc140_compiler
 echo ERROR: Invalid compiler specified '%compiler%'
 call :usage
 exit /b 1
@@ -123,6 +125,15 @@ if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin
 if errorlevel 1 exit /b 1
 goto :success
 
+:set_vc140_compiler
+set VC_VERSION=vc140
+set VS_COMNTOOLS=%VS140COMNTOOLS%
+if not defined VS140COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (VS140COMNTOOLS not defined)  & exit /b 1
+if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\vcvars32.bat"
+if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\bin\x86_amd64\vcvarsx86_amd64.bat"
+if errorlevel 1 exit /b 1
+goto :success
+
 :success
 exit /b 0
 
@@ -158,13 +169,13 @@ exit /b 1
 
 :usage
 echo.
-echo Usage: %~n0 [vc71 ^| vc80 ^| vc90 ^| vc100 ^| vc110] [-x86 ^| -x64] [--reset]
+echo Usage: %~n0 [vc71 ^| vc80 ^| vc90 ^| vc100 ^| vc110 ^| vc140] [-x86 ^| -x64] [--reset]
 echo.
 echo e.g.   %~n0 vc71     (implies -x86)
 echo        %~n0 vc80-x86
 echo        %~n0 vc80-x64 --reset
 echo.
-echo Note: vc71=vs2003, vc80=vs2005, vc90=vs2008, vc100=vs2010, vc110=vs2012 
+echo Note: vc71=vs2003, vc80=vs2005, vc90=vs2008, vc100=vs2010, vc110=vs2012, vc140=vs2015 
 goto :eof
 
 :display_vars

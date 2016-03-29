@@ -35,7 +35,7 @@ del /s /f BuildLog.htm 2> nul
 del /s /f *.manifest 2> nul
 del /s /f mt.dep 2> nul
 del /s /f *.tlog 2> nul
-del /s /f ResolveAssemblyReference.cache 2> nul
+del /s /f *ResolveAssemblyReference.cache 2> nul
 del /s /f *.lastbuildstate 2> nul
 del /s /f *.unsuccessfulbuild 2> nul
 del /s /f *_manifest.rc 2> nul
@@ -96,6 +96,18 @@ if /i "%~1" == "--all" (
 	del /s /f *.layout 2> nul
 )
 
+echo Removing Doxygen folders...
+
+for /d /r %%i in (dox) do (
+	if exist "%%i" (
+		del "%%i\*.css" 2> nul
+		del "%%i\*.html" 2> nul
+		del "%%i\*.js" 2> nul
+		del "%%i\*.png" 2> nul
+		rmdir /q "%%i" 2> nul
+	)
+)
+
 echo Removing log files...
 
 del /s /f *.log 2> nul
@@ -107,7 +119,10 @@ echo Removing other files...
 del /s /f *.mht 2> nul
 for /d /r %%i in (debug)   do if exist "%%i" del /s /f "%%i\*.ini" 2> nul
 for /d /r %%i in (release) do if exist "%%i" del /s /f "%%i\*.ini" 2> nul
-rd /s /q VSMacros71 2> nul
+rmdir /s /q VSMacros71 2> nul
+for /d /r %%i in (*.tlog) do @if exist "%%i" rmdir "%%i" 2> nul
+del /s /f unsuccessfulbuild 2> nul
+del /s /f RSP*.rsp 2> nul
 
 echo Removing Debug and Release directories...
 

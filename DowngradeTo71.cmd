@@ -30,6 +30,8 @@ for /r "%folder%" %%f in (*.sln) do (
 	sed -i "s/# Visual Studio 2008//g" "%%f"
 )
 
+del sed* 1>nul 2>nul
+
 :success
 exit /b 0
 

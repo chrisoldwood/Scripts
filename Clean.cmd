@@ -134,10 +134,10 @@ del /s /f *.zip 2> nul
 
 echo Removing Debug and Release directories...
 
-for /d %%i in (*) do (
-	for /d %%j in ("%%i\ipch") do (
-		for /d %%k in ("%%j\*") do rmdir "%%k" 2> nul
-		rmdir "%%j" 2> nul
+for /d /r %%i in (ipch) do (
+	if exist "%%i" (
+		for /d %%j in ("%%i\*") do rmdir "%%j" 2> nul
+		rmdir "%%i" 2> nul
 	)
 )
 

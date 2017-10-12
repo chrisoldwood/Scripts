@@ -56,6 +56,8 @@ del /s %~dp1\UpgradeLog*.htm 2> nul
 del /s %~dp1\UpgradeLog*.XML 2> nul
 for /d %%d in (%~dp1Backup\*.*) do rmdir /q %%d 2>nul
 rmdir /q %~dp1Backup 2> nul
+for /d %%d in (%~dp1Backup2\*.*) do rmdir /q %%d 2>nul
+rmdir /q %~dp1Backup2 2> nul
 rmdir /s /q %~dp1\_UpgradeReport_Files 2> nul
 
 :success

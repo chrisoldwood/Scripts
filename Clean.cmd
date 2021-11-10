@@ -38,6 +38,8 @@ del /s /f *ResolveAssemblyReference.cache 2> nul
 del /s /f *.lastbuildstate 2> nul
 del /s /f *.unsuccessfulbuild 2> nul
 del /s /f *_manifest.rc 2> nul
+del /s /f *.recipe 2> nul
+del /s /f *.vcxproj.FileListAbsolute.txt 2> nul
 
 echo Removing VC++ target files...
 

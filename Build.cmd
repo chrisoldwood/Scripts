@@ -65,6 +65,7 @@ if /i "%VC_VERSION%" == "vc110" call :use_devenv  "%~1" "%~2"
 if /i "%VC_VERSION%" == "vc140" call :use_devenv  "%~1" "%~2"
 if /i "%VC_VERSION%" == "vc150" call :use_devenv  "%~1" "%~2"
 if /i "%VC_VERSION%" == "vc160" call :use_devenv  "%~1" "%~2"
+if /i "%VC_VERSION%" == "vc170" call :use_devenv  "%~1" "%~2"
 if errorlevel 1 exit /b 1
 goto :eof
 

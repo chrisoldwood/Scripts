@@ -48,7 +48,7 @@ set filelist=PkgList.%build%.txt
 if exist "%zipfile%" del "%zipfile%"
 if errorlevel 1 popd & exit /b 1
 
-7za a -tzip -bd %zipfile% @%filelist%
+7z a -tzip -bd %zipfile% @%filelist%
 if errorlevel 1 popd & exit /b 1
 
 popd

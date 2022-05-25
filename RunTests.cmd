@@ -19,16 +19,40 @@ if /i "%TOOLCHAIN%" == "" (
 	exit /b 1
 )
 
-:set_build
-if /i "%~1" == "debug"	set build=Debug
-if /i "%~1" == "release"	set build=Release
-if /i "%build%"== "" (
+:check_build
+if /i "%~1" == "all"		goto :do_debug_build
+if /i "%~1" == "debug"		goto :do_debug_build
+if /i "%~1" == "release"	goto :do_release_build
 echo ERROR: Invalid build type '%~1'
 call :usage
 exit /b 1
-)
+
+:do_debug_build
+if /i "%~1" == "all"   call :run_tests debug
+if /i "%~1" == "debug" call :run_tests debug
+if errorlevel 1 exit /b 1
+
+:do_release_build
+if /i "%~1" == "all"     call :run_tests release
+if /i "%~1" == "release" call :run_tests release
+if errorlevel 1 exit /b 1
+
+:success
+exit /b 0
+
+rem ************************************************************
+rem Functions
+rem ************************************************************
+
+:usage
+echo.
+echo Usage: %~n0 [debug ^| release ^| all]
+echo.
+echo e.g.   %~n0 debug 
+goto :eof
 
 :run_tests
+set "build=%~1"
 for /r /d %%d in (Test) do (
 	set "folder=%%d\%build%"
 	if exist "!folder!" (
@@ -38,19 +62,7 @@ for /r /d %%d in (Test) do (
 	)
 )
 
-:success
 call :show_passed
-exit /b 0
-
-rem ************************************************************
-rem Functions
-rem ************************************************************
-
-:usage
-echo.
-echo Usage: %~n0 [debug ^| release]
-echo.
-echo e.g.   %~n0 debug 
 goto :eof
 
 :show_passed

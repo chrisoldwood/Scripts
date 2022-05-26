@@ -138,9 +138,20 @@ echo Removing Debug and Release directories...
 
 for /d /r %%i in (ipch)    do if exist "%%i" rmdir /s /q "%%i" 2> nul
 for /d /r %%i in (.vs)     do if exist "%%i" rmdir /s /q "%%i" 2> nul
-for /d /r %%i in (debug)   do if exist "%%i" rmdir "%%i" 2> nul
-for /d /r %%i in (release) do if exist "%%i" rmdir "%%i" 2> nul
-for /d /r %%i in (x64)     do if exist "%%i" rmdir "%%i" 2> nul
+for /d /r %%i in (Debug)   do (
+	if exist "%%i" (
+		rmdir "%%i\Win32" 2> nul
+		rmdir "%%i\x64"   2> nul
+		rmdir "%%i"       2> nul
+	)
+)
+for /d /r %%i in (Release)   do (
+	if exist "%%i" (
+		rmdir "%%i\Win32" 2> nul
+		rmdir "%%i\x64"   2> nul
+		rmdir "%%i"       2> nul
+	)
+)
 
 :success
 exit /b 0

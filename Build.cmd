@@ -70,7 +70,7 @@ if errorlevel 1 exit /b 1
 goto :eof
 
 :use_devenv
-devenv /nologo /useenv "%~1" /build "%~2"
+devenv /nologo /useenv "%~1" /build "%~2|%VC_PLATFORM%"
 if errorlevel 1 exit /b 1
 goto :eof
 

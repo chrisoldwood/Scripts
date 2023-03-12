@@ -48,6 +48,13 @@ set filelist=PkgList.%build%.txt
 if exist "%zipfile%" del "%zipfile%"
 if errorlevel 1 popd & exit /b 1
 
+for /f %%l in (%filelist%) do (
+    if not exist "%%l" (
+        echo ERROR: Package file missing: "%%l"
+        popd & exit /b 1
+    )
+)
+
 7z a -tzip -bd %zipfile% @%filelist%
 if errorlevel 1 popd & exit /b 1
 

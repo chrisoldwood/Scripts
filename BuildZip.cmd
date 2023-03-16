@@ -39,10 +39,16 @@ echo e.g.   %~n0 all project
 goto :eof
 
 :build
+if /i "%~n1" == "" (
+    echo ERROR: Empty solution folder name. Trailing backslash?
+    exit /b 1
+)
 pushd "%~1"
+if errorlevel 1 exit /b 1
 
 set build=%~2
-set zipfile=%build%\%~n1.zip
+set folder=%~n1
+set zipfile=%build%\%folder%.zip
 set filelist=PkgList.%build%.txt
 
 if exist "%zipfile%" del "%zipfile%"

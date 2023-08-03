@@ -10,19 +10,25 @@ setlocal enabledelayedexpansion
 if /i "%~1" == "-?"     call :usage & exit /b 0
 if /i "%~1" == "--help" call :usage & exit /b 0
 
-:check_args
+:check_args_exist
 if /i "%~1" == "" call :usage & exit /b 1
 if /i "%~2" == "" call :usage & exit /b 1
+if /i "%~3" == "" call :usage & exit /b 1
 
-:do_debug_build
-if /i "%~1" == "all"   call :build "%~2" Debug
-if /i "%~1" == "debug" call :build "%~2" Debug
-if errorlevel 1 exit /b 1
+:check_build
+if /i "%~1" == "all"     goto :check_platform
+if /i "%~1" == "debug"   goto :check_platform
+if /i "%~1" == "release" goto :check_platform
+call :usage & exit /b 1
 
-:do_release_build
-if /i "%~1" == "all"     call :build "%~2" Release
-if /i "%~1" == "release" call :build "%~2" Release
-if errorlevel 1 exit /b 1
+:check_platform
+if /i "%~2" == "all"   goto :args_valid
+if /i "%~2" == "win32" goto :args_valid
+if /i "%~2" == "x64"   goto :args_valid
+call :usage & exit /b 1
+
+:args_valid
+call :decode_build %*
 
 :success
 exit /b 0
@@ -33,36 +39,68 @@ rem ************************************************************
 
 :usage
 echo.
-echo Usage: %~n0 [debug ^| release ^| all] [Solution folder]
+echo Usage: %~n0 [debug ^| release ^| all] [Win32 ^| x64 ^| all] [Solution folder]
 echo.
-echo e.g.   %~n0 all project
+echo e.g.   %~n0 all all project
+goto :eof
+
+:decode_build
+if /i "%~1" == "all"   call :decode_platform Debug "%~2" "%~3" || exit /b
+if /i "%~1" == "debug" call :decode_platform Debug "%~2" "%~3" || exit /b
+
+if /i "%~1" == "all"     call :decode_platform Release "%~2" "%~3" || exit /b
+if /i "%~1" == "release" call :decode_platform Release "%~2" "%~3" || exit /b
+goto :eof
+
+:decode_platform
+if /i "%~2" == "all"   call :build "%~1" Win32 "%~3" || exit /b
+if /i "%~2" == "Win32" call :build "%~1" Win32 "%~3" || exit /b
+
+if /i "%~2" == "all"   call :build "%~1" x64 "%~3" || exit /b
+if /i "%~2" == "x64"   call :build "%~1" x64 "%~3" || exit /b
 goto :eof
 
 :build
-if /i "%~n1" == "" (
+if /i "%~n3" == "" (
     echo ERROR: Empty solution folder name. Trailing backslash?
     exit /b 1
 )
-pushd "%~1"
-if errorlevel 1 exit /b 1
 
-set build=%~2
-set folder=%~n1
-set zipfile=%build%\%folder%.zip
-set filelist=PkgList.%build%.txt
-
-if exist "%zipfile%" del "%zipfile%"
-if errorlevel 1 popd & exit /b 1
-
-for /f %%l in (%filelist%) do (
-    if not exist "%%l" (
-        echo ERROR: Package file missing: "%%l"
-        popd & exit /b 1
-    )
+set "pkglist=%~3\PkgList.txt"
+if not exist %pkglist% (
+    echo ERROR: Package list "%pkglist%" is missing!
+    exit /b 1
 )
 
-7z a -tzip -bd %zipfile% @%filelist%
-if errorlevel 1 popd & exit /b 1
+pushd "%~3" || exit /b
+call :build_zip %*
+goto :eof
+
+:build_zip
+set build=%~1
+set platform=%~2
+set folder=%~n3
+set zipdir=%build%\%platform%
+set zipfile=%zipdir%\%folder%.zip
+set pkglist=PkgList.txt
+set filelist=%zipdir%\FileList.txt
+
+mkdir "%zipdir%" || exit /b
+if exist "%filelist%" del "%filelist%" || exit /b
+if exist "%zipfile%" del "%zipfile%" || exit /b
+
+for /f %%l in (%pkglist%) do (
+    set "file=%%l"
+    set "file=!file:${BUILD}=%build%!"
+    set "file=!file:${PLATFORM}=%platform%!"
+    if not exist "!file!" (
+        echo ERROR: Package file missing: "!file!"
+        exit /b 1
+    )
+    echo !file!>>"%filelist%" || exit /b
+)
+
+7z a -tzip -bd %zipfile% @%filelist% || exit /b
 
 popd
 goto :eof

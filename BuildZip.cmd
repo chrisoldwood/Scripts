@@ -85,7 +85,7 @@ set zipfile=%zipdir%\%folder%.zip
 set pkglist=PkgList.txt
 set filelist=%zipdir%\FileList.txt
 
-mkdir "%zipdir%" || exit /b
+if not exist "%zipdir%" mkdir "%zipdir%" || exit /b
 if exist "%filelist%" del "%filelist%" || exit /b
 if exist "%zipfile%" del "%zipfile%" || exit /b
 

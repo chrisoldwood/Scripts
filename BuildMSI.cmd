@@ -3,9 +3,6 @@ rem ************************************************************
 rem
 rem Script to build an MSI using the WiX toolkit.
 rem
-rem NB: You must set the environment variables first by running
-rem the SetVars script.
-rem
 rem ************************************************************
 setlocal enabledelayedexpansion
 
@@ -16,12 +13,6 @@ if /i "%~1" == "--help" call :usage & exit /b 0
 :check_args
 if /i "%~1" == "" call :usage & exit /b 1
 if /i "%~2" == "" call :usage & exit /b 1
-
-:verify_toolchain
-if /i "%TOOLCHAIN%" == "" (
-	echo ERROR: Compiler environment variables not set. Run 'SetVars' first.
-	exit /b 1
-)
 
 :do_debug_build
 if /i "%~1" == "all"   call :build "%~2" Debug
@@ -48,6 +39,11 @@ echo e.g.   %~n0 all project\Setup.wxs
 goto :eof
 
 :build
+where /q candle
+if !errorlevel! neq 0 goto :wix_missing
+where /q light
+if !errorlevel! neq 0 goto :wix_missing
+
 pushd "%~dp1."
 
 set build=%~2
@@ -64,3 +60,9 @@ if errorlevel 1 popd & exit /b 1
 
 popd
 goto :eof
+
+:wix_missing
+echo ERROR: WiX not installed or on the PATH.
+echo You can install it with 'choco install -y Wix35'.
+echo Note: you also need to manually update the PATH.
+exit /b !errorlevel!

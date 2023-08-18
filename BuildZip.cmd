@@ -28,6 +28,9 @@ if /i "%~2" == "x64"   goto :args_valid
 call :usage & exit /b 1
 
 :args_valid
+where /q 7z
+if !errorlevel! neq 0 goto :7zip_missing
+
 call :decode_build %*
 
 :success
@@ -104,3 +107,8 @@ for /f %%l in (%pkglist%) do (
 
 popd
 goto :eof
+
+:7zip_missing
+echo ERROR: 7z not installed or on the PATH.
+echo You can install it with 'choco install -y 7zip'.
+exit /b !errorlevel!

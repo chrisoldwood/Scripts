@@ -1,3 +1,16 @@
+set "PATH=%PATH%;C:\Dev\C++\Scripts"
+pushd C:\Dev\C++ && call .\SetPath.cmd
+
+$env:PATH+=';C:\Dev\C++\Scripts'
+pushd C:\Dev\C++; . .\SetPath.ps1
+
+setvars vc90-x86
+setvars vc90-x64
+
+set "PATH=%PATH%;C:\Program Files (x86)\WiX Toolset v3.11\bin"
+$env:PATH += ';C:\Program Files (x86)\WiX Toolset v3.11\bin'
+
+$env:PATH += ';C:\Program Files\Git\usr\bin'
 
 for /r %d in (.) do @if exist "%d\.git" (echo *** %d *** && pushd %d && git status -s & popd)
 
@@ -10,3 +23,11 @@ for /r %d in (.) do @if exist "%d\.git" (echo *** %d *** && pushd %d && git push
 for /r %d in (.) do @if exist "%d\HEAD" (echo *** %d *** && pushd %d && git push github & popd)
 
 for /r %f in (*.cbp) do @CompareVCandCB %~dpf
+
+ls -r *.* -Filter .git -Attributes Hidden |
+  foreach { Split-Path -Parent $_ } |
+  foreach { echo $_; pushd $_; git status -s; popd }
+
+$cmd={ echo $_; pushd $_; git status -s; popd }
+
+ls -r *.* -Filter .git -Attributes Hidden | % { Split-Path -Parent $_ } | % { & $cmd }

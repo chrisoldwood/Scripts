@@ -132,6 +132,7 @@ rmdir /s /q VSMacros71 2> nul
 for /d /r %%i in (*.tlog) do @if exist "%%i" rmdir "%%i" 2> nul
 del /s /f unsuccessfulbuild 2> nul
 del /s /f RSP*.rsp 2> nul
+del /s /f FileList.txt 2> nul
 del /s /f *.zip 2> nul
 
 echo Removing Debug and Release directories...

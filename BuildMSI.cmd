@@ -46,7 +46,12 @@ if !errorlevel! neq 0 goto :wix_missing
 
 pushd "%~dp1."
 
+if not defined VC_PLATFORM (
+    echo WARNING: VC_PLATFORM is not defined.
+)
+
 set build=%~2
+set platform=%VC_PLATFORM%
 set input=%~nx1
 set locfile=%~n1.wxl
 set objfile=%build%\%~n1.wixobj

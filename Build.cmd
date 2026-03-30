@@ -67,19 +67,26 @@ if /i "%VC_VERSION%" == "vc150" call :use_devenv  "%~1" "%~2"
 if /i "%VC_VERSION%" == "vc160" call :use_devenv  "%~1" "%~2"
 if /i "%VC_VERSION%" == "vc170" call :use_devenv  "%~1" "%~2"
 if errorlevel 1 exit /b 1
+if not defined compilerFound (
+        echo ERROR: compiler version not configured.
+        exit /b 1
+) 
 goto :eof
 
 :use_devenv
+set compilerFound=1
 devenv /nologo /useenv "%~1" /build "%~2|%VC_PLATFORM%"
 if errorlevel 1 exit /b 1
 goto :eof
 
 :use_vcbuild
+set compilerFound=1
 vcbuild /nologo /useenv "%~1" "%~2|%VC_PLATFORM%"
 if errorlevel 1 exit /b 1
 goto :eof
 
 :use_vcexpress
+set compilerFound=1
 vcexpress "%~1" /useenv /build "%~2|%VC_PLATFORM%"
 if errorlevel 1 exit /b 1
 goto :eof

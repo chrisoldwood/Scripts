@@ -13,6 +13,7 @@ rem VC++ 14.0: "%VS140COMNTOOLS%\vsvars32.bat"
 rem VC++ 15.0: "vswhere + vsvars32.bat"
 rem VC++ 16.0: "vswhere + vsvars32.bat"
 rem VC++ 17.0: "vswhere + vsvars32.bat"
+rem VC++ 18.0: "vswhere + vsvars32.bat"
 rem
 rem The --reset switch ensures that the variables are cleaned
 rem out first to provide a tighter sandbox. 
@@ -76,6 +77,7 @@ if /i "%compiler%" == "vc140" goto :set_vc140_compiler
 if /i "%compiler%" == "vc150" goto :set_vc150_compiler
 if /i "%compiler%" == "vc160" goto :set_vc160_compiler
 if /i "%compiler%" == "vc170" goto :set_vc170_compiler
+if /i "%compiler%" == "vc180" goto :set_vc180_compiler
 echo ERROR: Invalid compiler specified '%compiler%'
 call :usage
 exit /b 1
@@ -182,6 +184,20 @@ if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Aux
 if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvarsx86_amd64.bat"
 goto :success
 
+:set_vc180_compiler
+set VC_VERSION=vc180
+set vswhereFolder=%ProgramFiles%\Microsoft Visual Studio\Installer
+if not exist "%vswhereFolder%\vswhere.exe" set vswhereFolder=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer
+if not exist "%vswhereFolder%\vswhere.exe" echo ERROR: vswhere.exe not installed & exit /b 1
+pushd %vswhereFolder%
+for /f "usebackq tokens=1* delims=;" %%i in (`vswhere.exe -version "[18,19.0)" -property installationPath`) do set VS180COMNTOOLS=%%i\Common7\Tools\
+popd
+set VS_COMNTOOLS=%VS180COMNTOOLS%
+if not defined VS180COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (vswhere did not find it) & exit /b 1
+if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvars32.bat"
+if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvarsx86_amd64.bat"
+goto :success
+
 :success
 exit /b 0
 
@@ -217,13 +233,13 @@ exit /b 1
 
 :usage
 echo.
-echo Usage: %~n0 [vc71 ^| vc80 ^| vc90 ^| vc100 ^| vc110 ^| vc140 ^| vc150 ^| vc160 ^| vc170] [-x86 ^| -x64] [--reset]
+echo Usage: %~n0 [vc71 ^| vc80 ^| vc90 ^| vc100 ^| vc110 ^| vc140 ^| vc150 ^| vc160 ^| vc170 ^| vc180] [-x86 ^| -x64] [--reset]
 echo.
 echo e.g.   %~n0 vc71     (implies -x86)
 echo        %~n0 vc80-x86
 echo        %~n0 vc80-x64 --reset
 echo.
-echo Note: vc71=vs2003, vc80=vs2005, vc90=vs2008, vc100=vs2010, vc110=vs2012, vc140=vs2015, vc150=vs2017, vc160=vs2019, vc170=vs2022
+echo Note: vc71=vs2003, vc80=vs2005, vc90=vs2008, vc100=vs2010, vc110=vs2012, vc140=vs2015, vc150=vs2017, vc160=vs2019, vc170=vs2022, vc180=vs2026
 goto :eof
 
 :display_vars

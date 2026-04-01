@@ -1,24 +1,19 @@
 @echo off
-rem ************************************************************
+rem ***************************************************************************
 rem
 rem Script to run the configuration script for the specified
 rem version of the Visual C++ compiler.
 rem
-rem VC++  7.1: "%VS71COMNTOOLS%\vsvars32.bat"
-rem VC++  8.0: "%VS80COMNTOOLS%\vsvars32.bat"
-rem VC++  9.0: "%VS90COMNTOOLS%\vsvars32.bat"
-rem VC++ 10.0: "%VS100COMNTOOLS%\vsvars32.bat"
-rem VC++ 11.0: "%VS110COMNTOOLS%\vsvars32.bat"
-rem VC++ 14.0: "%VS140COMNTOOLS%\vsvars32.bat"
-rem VC++ 15.0: "vswhere + vsvars32.bat"
-rem VC++ 16.0: "vswhere + vsvars32.bat"
-rem VC++ 17.0: "vswhere + vsvars32.bat"
-rem VC++ 18.0: "vswhere + vsvars32.bat"
+rem VC++ 7.1, 8.0, 9.0, 10.0, 11.0, 14.0: 
+rem   "%VS###COMNTOOLS% + vsvars(32/x86_amd64).bat"
+rem 
+rem VC++ 15.0, 16.0, 17.0, 18.0:
+rem   "(vswhere -property installationPath) + vsvars(32/x86_amd64).bat"
 rem
 rem The --reset switch ensures that the variables are cleaned
 rem out first to provide a tighter sandbox. 
 rem
-rem ************************************************************
+rem ***************************************************************************
 
 :handle_help_request
 if /i "%~1" == "-?"     call :usage & exit /b 0
@@ -143,67 +138,45 @@ if errorlevel 1 exit /b 1
 goto :success
 
 :set_vc150_compiler
-set VC_VERSION=vc150
-set vswhereFolder=%ProgramFiles%\Microsoft Visual Studio\Installer
-if not exist "%vswhereFolder%\vswhere.exe" set vswhereFolder=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer
-if not exist "%vswhereFolder%\vswhere.exe" echo ERROR: vswhere.exe not installed & exit /b 1
-pushd %vswhereFolder%
-for /f "usebackq tokens=1* delims=;" %%i in (`vswhere.exe -version "[15,16.0)" -property installationPath`) do set VS150COMNTOOLS=%%i\Common7\Tools\
-popd
-set VS_COMNTOOLS=%VS150COMNTOOLS%
-if not defined VS150COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (vswhere did not find it) & exit /b 1
-if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvars32.bat"
-if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvarsx86_amd64.bat"
+call :configure_with_vswhere vc150 "[15,16.0)"
+if errorlevel 1 exit /b 1
 goto :success
 
 :set_vc160_compiler
-set VC_VERSION=vc160
-set vswhereFolder=%ProgramFiles%\Microsoft Visual Studio\Installer
-if not exist "%vswhereFolder%\vswhere.exe" set vswhereFolder=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer
-if not exist "%vswhereFolder%\vswhere.exe" echo ERROR: vswhere.exe not installed & exit /b 1
-pushd %vswhereFolder%
-for /f "usebackq tokens=1* delims=;" %%i in (`vswhere.exe -version "[16,17.0)" -property installationPath`) do set VS160COMNTOOLS=%%i\Common7\Tools\
-popd
-set VS_COMNTOOLS=%VS160COMNTOOLS%
-if not defined VS160COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (vswhere did not find it) & exit /b 1
-if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvars32.bat"
-if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvarsx86_amd64.bat"
+call :configure_with_vswhere vc160 "[16,17.0)"
+if errorlevel 1 exit /b 1
 goto :success
 
 :set_vc170_compiler
-set VC_VERSION=vc170
-set vswhereFolder=%ProgramFiles%\Microsoft Visual Studio\Installer
-if not exist "%vswhereFolder%\vswhere.exe" set vswhereFolder=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer
-if not exist "%vswhereFolder%\vswhere.exe" echo ERROR: vswhere.exe not installed & exit /b 1
-pushd %vswhereFolder%
-for /f "usebackq tokens=1* delims=;" %%i in (`vswhere.exe -version "[17,18.0)" -property installationPath`) do set VS170COMNTOOLS=%%i\Common7\Tools\
-popd
-set VS_COMNTOOLS=%VS170COMNTOOLS%
-if not defined VS170COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (vswhere did not find it) & exit /b 1
-if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvars32.bat"
-if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvarsx86_amd64.bat"
+call :configure_with_vswhere vc170 "[17,18.0)"
+if errorlevel 1 exit /b 1
 goto :success
 
 :set_vc180_compiler
-set VC_VERSION=vc180
-set vswhereFolder=%ProgramFiles%\Microsoft Visual Studio\Installer
-if not exist "%vswhereFolder%\vswhere.exe" set vswhereFolder=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer
-if not exist "%vswhereFolder%\vswhere.exe" echo ERROR: vswhere.exe not installed & exit /b 1
-pushd %vswhereFolder%
-for /f "usebackq tokens=1* delims=;" %%i in (`vswhere.exe -version "[18,19.0)" -property installationPath`) do set VS180COMNTOOLS=%%i\Common7\Tools\
-popd
-set VS_COMNTOOLS=%VS180COMNTOOLS%
-if not defined VS180COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (vswhere did not find it) & exit /b 1
-if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvars32.bat"
-if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvarsx86_amd64.bat"
+call :configure_with_vswhere vc180 "[18,19.0)"
+if errorlevel 1 exit /b 1
 goto :success
 
 :success
 exit /b 0
 
-rem ************************************************************
+rem ***************************************************************************
 rem Functions
-rem ************************************************************
+rem ***************************************************************************
+
+:configure_with_vswhere
+set "VC_VERSION=%~1"
+set "vswhereRange=%~2"
+set "vswhereFolder=%ProgramFiles%\Microsoft Visual Studio\Installer"
+if not exist "%vswhereFolder%\vswhere.exe" set "vswhereFolder=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer"
+if not exist "%vswhereFolder%\vswhere.exe" echo ERROR: vswhere.exe not installed & exit /b 1
+pushd "%vswhereFolder%"
+for /f "usebackq tokens=1* delims=;" %%i in (`vswhere.exe -version "%vswhereRange%" -property installationPath`) do set "VS_COMNTOOLS=%%i\Common7\Tools\"
+popd
+if not defined VS_COMNTOOLS echo ERROR: %VC_VERSION% compiler not installed (vswhere did not find it) & exit /b 1
+if /i "%platform%" == "x86" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvars32.bat"
+if /i "%platform%" == "x64" call :configure_compiler "%VS_COMNTOOLS%..\..\vc\Auxiliary\Build\vcvarsx86_amd64.bat"
+goto :eof
 
 :configure_compiler
 if not exist "%~1" (

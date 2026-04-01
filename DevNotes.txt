@@ -1,0 +1,8 @@
+New Compiler Checklist
+----------------------
+
+- Update setvars.cmd
+- Update build.cmd
+
+Chris Oldwood 
+1st April 2026

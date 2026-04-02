@@ -1,8 +1,8 @@
 @echo off
 rem ***************************************************************************
 rem
-rem Compare the Visual C++ and CodeBlocks project files and
-rem point out any missing sources files.
+rem Compare the old and new format Visual C++ project files and point out any
+rem missing sources files.
 rem
 rem ***************************************************************************
 setlocal enabledelayedexpansion
@@ -24,22 +24,22 @@ if !errorlevel! neq 0 goto :tools_missing
 
 set folder=%~1
 
-if not exist "%folder%\*.cbp" echo ERROR: No .cbp project file found in "%folder%" & exit /b 1
-for %%f in ("%folder%\*.cbp") do set cbpFile=%%f
+if not exist "%folder%\*.vcxproj" echo ERROR: No .vcxproject project file found in "%folder%" & exit /b 1
+for %%f in ("%folder%\*.vcxproj") do set vcxFile=%%f
 
 if not exist "%folder%\*.vcproj" echo ERROR: No .vcproj project file found in "%folder%" & exit /b 1
 for %%f in ("%folder%\*.vcproj") do set vcprojFile=%%f
 
-set cbFileList=%TEMP%\CbFileList.txt
-grep -E "Unit filename" "%cbpFile%" | gawk -F"\42" "{ print $2 }" | grep -o -E "[a-zA-Z0-9_.]+$" | sort | uniq > "%cbFileList%" 
+set vcxFileList=%TEMP%\vcxFileList.txt
+grep -E "(ClInclude|ClCompile|Text|None) Include=" "%vcxFile%" | gawk -F"\42" "{ print $2 }" | grep -o -E "[a-zA-Z0-9_.]+$" | sort | uniq > "%vcxFileList%" 
 if %errorlevel% neq 0 exit /b 1
 
 set vcFileList=%TEMP%\VcFileList.txt
 grep -E "RelativePath=" "%vcprojFile%" | gawk -F"\42" "{ print $2 }" | grep -o -E "[a-zA-Z0-9_.]+$" | sort | uniq > "%vcFileList%"
 if %errorlevel% neq 0 exit /b 1
 
-echo %cbpFile% ^| %vcprojFile% 
-diff -i "%cbFileList%" "%vcFileList%" --side-by-side --suppress-common-lines --width 80
+echo %vcxFile% ^| %vcprojFile% 
+diff -i "%vcxFileList%" "%vcFileList%" --side-by-side --suppress-common-lines --width 80
 
 :success
 exit /b 0
